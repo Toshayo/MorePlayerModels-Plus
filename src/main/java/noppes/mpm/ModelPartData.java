@@ -13,6 +13,7 @@ public class ModelPartData {
 	public byte pattern = 0;
 	public boolean playerTexture;
 	public String name;
+	public NBTTagCompound customData = new NBTTagCompound();
 	private ResourceLocation location;
 	private String custom = "";
 
@@ -28,8 +29,9 @@ public class ModelPartData {
 		compound.setInteger("Color", color);
 		compound.setBoolean("PlayerTexture", playerTexture);
 		compound.setByte("Pattern", pattern);
-		if(!custom.equals(""))
+		if(!custom.isEmpty())
 			compound.setString("CustomTexture", custom);
+		compound.setTag("CustomData", customData);
 
 		return compound;
 	}
@@ -40,6 +42,7 @@ public class ModelPartData {
 		playerTexture = compound.getBoolean("PlayerTexture");
 		pattern = compound.getByte("Pattern");
 		custom = compound.getString("CustomTexture");
+		customData = compound.getCompoundTag("CustomData");
 		location = null;
 	}
 

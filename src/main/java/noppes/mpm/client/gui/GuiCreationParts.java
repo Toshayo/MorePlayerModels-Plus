@@ -2,16 +2,19 @@ package noppes.mpm.client.gui;
 
 import kamkeel.MorePlayerModelsPermissions;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
 import noppes.mpm.ModelData;
 import noppes.mpm.ModelPartData;
 import noppes.mpm.client.controller.ClientPermController;
 import noppes.mpm.client.gui.util.*;
+import noppes.mpm.client.model.part.head.ModelHalo;
 import noppes.mpm.constants.EnumParts;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GuiCreationParts extends GuiCreationScreenInterface implements ITextfieldListener, ICustomScrollListener{
 	private GuiCustomScroll scroll;
@@ -50,6 +53,9 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 		}
 		if(ClientPermController.hasPermission(MorePlayerModelsPermissions.PARTS_HORNS)){
 			partList.add(new GuiPartHorns());
+		}
+		if(ClientPermController.hasPermission(MorePlayerModelsPermissions.PARTS_HALO)){
+			partList.add(new GuiPartHalo().setTypes(new String[]{"gui.none", "gui.halo.base", "gui.halo.thin"}));
 		}
 		if(ClientPermController.hasPermission(MorePlayerModelsPermissions.PARTS_HAIR)){
 			partList.add(new GuiPartHair());
@@ -315,6 +321,134 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 				GuiCreationParts.this.addButton(new GuiButtonBiDirectional(22, guiLeft + 145, y, 100, 20, new String[]{"1","2"}, data.pattern));
 			}
 			return y;
+		}
+	}
+	class GuiPartHalo extends GuiPart{
+		public GuiPartHalo() {
+			super(EnumParts.HALO);
+			noPlayerOptions();
+		}
+
+		@Override
+		public int initGui() {
+			data = playerdata.getPartData(part);
+			int y = guiTop + 50;
+			if(data == null || !data.playerTexture || !noPlayerTypes) {
+				GuiCreationParts.this.addLabel(new GuiNpcLabel(20, "gui.type", guiLeft + 102, y + 5, 0xFFFFFF));
+				GuiCreationParts.this.addButton(new GuiButtonBiDirectional(20, guiLeft + 145, y, 100, 20, types, data == null ? 0 : data.type + 1));
+				y += 24;
+			}
+			if(data != null && !data.playerTexture && !noPlayerTextures) {
+				GuiCreationParts.this.addLabel(new GuiNpcLabel(23, "gui.color", guiLeft + 102, y + 5, 0xFFFFFF));
+				GuiCreationParts.this.addButton(new GuiColorButton(23, guiLeft + 150, y, data.color));
+				y += 24;
+			}
+			if(data != null && data.type >= 1){
+				GuiCreationParts.this.addButton(new GuiButtonBiDirectional(57, guiLeft + 215, y - 25, 60, 20, new String[]{"Off", "Lit", "Solid"}, ModelHalo.getMaterial(data)));
+				int btnWidth = fontRendererObj.getStringWidth(StatCollector.translateToLocal("gui.halo.reset")) + 10;
+
+				GuiNpcSlider slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 49, guiLeft + 132, y, 100, 20, ModelHalo.getWidth(data));
+				slider.setString(StatCollector.translateToLocal("gui.halo.width"));
+				GuiCreationParts.this.addSlider(slider);
+				GuiCreationParts.this.addButton(new GuiNpcButton(50, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+				y += 23;
+
+				slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 51, guiLeft + 132, y, 100, 20, ModelHalo.getElevation(data));
+				slider.setString(StatCollector.translateToLocal("gui.halo.elevation"));
+				GuiCreationParts.this.addSlider(slider);
+				GuiCreationParts.this.addButton(new GuiNpcButton(52, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+				y += 23;
+
+				slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 53, guiLeft + 132, y, 100, 20, ModelHalo.getRotationX(data));
+				slider.setString(StatCollector.translateToLocal("gui.halo.rotationX"));
+				GuiCreationParts.this.addSlider(slider);
+				GuiCreationParts.this.addButton(new GuiNpcButton(54, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+				y += 23;
+
+				slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 55, guiLeft + 132, y, 100, 20, ModelHalo.getRotationZ(data));
+				slider.setString(StatCollector.translateToLocal("gui.halo.rotationZ"));
+				GuiCreationParts.this.addSlider(slider);
+				GuiCreationParts.this.addButton(new GuiNpcButton(56, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+				y += 23;
+
+				GuiCreationParts.this.addLabel(new GuiNpcLabel(22, "gui.pattern", guiLeft + 102, y + 5, 0xFFFFFF));
+				GuiCreationParts.this.addButton(new GuiButtonBiDirectional(22, guiLeft + 155, y, 100, 20, new String[]{"gui.halo.float_spin","gui.halo.float","gui.halo.spin","gui.halo.none"}, data.pattern));
+				y += 23;
+			}
+			return y;
+		}
+
+		@Override
+		protected void actionPerformed(GuiButton btn) {
+            switch (btn.id) {
+                case 49:
+					ModelHalo.setWidth(data, ((GuiNpcSlider) btn).sliderValue);
+                    break;
+                case 50:
+					ModelHalo.setWidth(data, 0.5F);
+					GuiCreationParts.this.getSlider(49).sliderValue = ModelHalo.getWidth(data);
+                    break;
+                case 51:
+					ModelHalo.setElevation(data, ((GuiNpcSlider) btn).sliderValue);
+                    break;
+                case 52:
+					ModelHalo.setElevation(data, 0.5F);
+					GuiCreationParts.this.getSlider(51).sliderValue = ModelHalo.getElevation(data);
+                    break;
+				case 53:
+					ModelHalo.setRotationX(data, ((GuiNpcSlider) btn).sliderValue);
+					break;
+				case 54:
+					ModelHalo.setRotationX(data, 0.5F);
+					GuiCreationParts.this.getSlider(53).sliderValue = ModelHalo.getRotationX(data);
+					break;
+				case 55:
+					ModelHalo.setRotationZ(data, ((GuiNpcSlider) btn).sliderValue);
+					break;
+				case 56:
+					ModelHalo.setRotationZ(data, 0.5F);
+					GuiCreationParts.this.getSlider(55).sliderValue = ModelHalo.getRotationZ(data);
+					break;
+				case 57:
+					ModelHalo.setMaterial(data, (byte) ((GuiNpcButton) btn).getValue());
+					break;
+                case 20:
+                    int i = ((GuiNpcButton) btn).getValue();
+                    if (i == 0 && canBeDeleted)
+                        playerdata.removePart(part);
+                    else {
+                        data = playerdata.getOrCreatePart(part);
+                        data.setCustomResource("");
+                        data.playerTexture = false;
+						ModelHalo.setWidth(data, 0.5F);
+						ModelHalo.setElevation(data, 0.5F);
+						ModelHalo.setRotationX(data, 0.5F);
+						ModelHalo.setRotationZ(data, 0.5F);
+                        data.setType(i - 1);
+                    }
+                    GuiCreationParts.this.initGui();
+                    break;
+				default:
+					super.actionPerformed(btn);
+					break;
+            }
+		}
+
+		class FakeGui extends GuiScreen implements ISliderListener {
+			private Consumer<GuiNpcSlider> listener;
+			private FakeGui(Consumer<GuiNpcSlider> listener) {
+				this.listener = listener;
+			}
+			@Override
+			public void mouseDragged(GuiNpcSlider guiNpcSlider) {
+				listener.accept(guiNpcSlider);
+			}
+
+			@Override
+			public void mousePressed(GuiNpcSlider guiNpcSlider) {}
+
+			@Override
+			public void mouseReleased(GuiNpcSlider guiNpcSlider) {}
 		}
 	}
 	class GuiPartHair extends GuiPart{

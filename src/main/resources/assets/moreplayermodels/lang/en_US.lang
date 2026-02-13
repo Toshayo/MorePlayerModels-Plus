@@ -37,6 +37,19 @@ gui.resettoplayer=Reset To Player
 gui.player=Player
 gui.new=New
 gui.hide=Hide
+gui.halo.base=Base
+gui.halo.base_textured=Textured
+gui.halo.thin=Thin
+gui.halo.thin_textured=Thin Textured
+gui.halo.width=Width
+gui.halo.elevation=Elevation
+gui.halo.rotationX=X Rotation
+gui.halo.rotationZ=Z Rotation
+gui.halo.reset=Reset
+gui.halo.float_spin=Float & Spin
+gui.halo.float=Float
+gui.halo.spin=Spin
+gui.halo.none=None
 
 animation.sleep=Sleep
 animation.crawl=Crawl
@@ -55,6 +68,7 @@ scale.shared=Shared
 
 part.ears=Ears
 part.horns=Horns
+part.halo=Halo
 part.hair=Hair
 part.mohawk=Mohawk
 part.snout=Snout
