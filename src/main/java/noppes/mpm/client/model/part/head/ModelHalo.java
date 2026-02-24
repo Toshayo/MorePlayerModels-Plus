@@ -102,9 +102,6 @@ public class ModelHalo extends ModelPartInterface {
             f1 = f1 * f1 + f1;
         }
         GL11.glTranslatef(0.0F, -0.2F + f1 * 0.05F, 0.0F);
-        if (entity.isSneaking()) {
-            GL11.glTranslatef(0.0F, 0.2F, 0.0F);
-        }
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         if(thinHalo) {
