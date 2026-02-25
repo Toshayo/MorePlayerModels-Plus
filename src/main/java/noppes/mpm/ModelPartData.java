@@ -31,7 +31,7 @@ public class ModelPartData {
 		compound.setByte("Pattern", pattern);
 		if(!custom.isEmpty())
 			compound.setString("CustomTexture", custom);
-		compound.setTag("CustomData", customData);
+		compound.setTag("CustomData", customData.copy());
 
 		return compound;
 	}
