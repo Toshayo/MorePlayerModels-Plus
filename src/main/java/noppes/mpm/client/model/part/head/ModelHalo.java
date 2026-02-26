@@ -18,9 +18,11 @@ public class ModelHalo extends ModelPartInterface {
     public float haloWidth;
     public float haloElevation;
     public float haloRotationX;
+    public float haloRotationY;
     public float haloRotationZ;
-    public boolean shouldFloat;
-    public boolean shouldRotate;
+    public float spinSpeed;
+    public float floatSpeed;
+    public float floatDistance;
     public byte haloMaterial;
     public byte type;
 
@@ -85,29 +87,42 @@ public class ModelHalo extends ModelPartInterface {
         this.entity = entity;
     }
 
+    public void translateHalo() {
+        float f1 = 0;
+        if(floatSpeed > 0.01 && floatDistance > 0.01) {
+            float f = (float) entity.ticksExisted + ClientEventHandler.partialTicks;
+            f1 = MathHelper.sin(f * 0.4F * floatSpeed * floatSpeed) / 2.0F + 0.5F;
+            f1 = f1 * f1 + f1;
+            f1 *= floatDistance * floatDistance * 4;
+        }
+        GL11.glTranslatef(0.0F, -0.2F + f1 * 0.05F, 0.0F);
+
+        float elevation = haloElevation - 0.5F;
+        GL11.glTranslatef(0F, -elevation, 0F);
+    }
+
+    public void rotateHalo() {
+        GL11.glRotatef(haloRotationX, 1.0F, 0.0F, 0.0F);
+        GL11.glRotatef(haloRotationY, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(haloRotationZ, 0.0F, 0.0F, 1.0F);
+        if(spinSpeed >= 0.01) {
+            GL11.glRotatef((float) entity.worldObj.getTotalWorldTime() * spinSpeed * spinSpeed * 4, 0.0F, 1.0F, 0.0F);
+        }
+    }
+
     @Override
     public void render(float f5) {
         if (this.isHidden || !this.showModel)
             return;
         GL11.glPushMatrix();
-        GL11.glRotatef(haloRotationX, 1.0F, 0.0F, 0.0F);
-        GL11.glRotatef(haloRotationZ, 0.0F, 0.0F, 1.0F);
-        if(shouldRotate) {
-            GL11.glRotatef((float) entity.worldObj.getTotalWorldTime(), 0.0F, 1.0F, 0.0F);
-        }
-        float f1 = 0;
-        if(shouldFloat) {
-            float f = (float) entity.ticksExisted + ClientEventHandler.partialTicks;
-            f1 = MathHelper.sin(f * 0.2F) / 2.0F + 0.5F;
-            f1 = f1 * f1 + f1;
-        }
-        GL11.glTranslatef(0.0F, -0.2F + f1 * 0.05F, 0.0F);
+
+        rotateHalo();
+        translateHalo();
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         if(thinHalo) {
-            float width = haloWidth * 0.05F - 0.4F;
-            float elevation = haloElevation * 0.05F - 0.4F;
-            GL11.glTranslatef(0F, -0.4F - elevation, 0F);
+            GL11.glTranslatef(0F, -0.45F, 0F);
+            float width = haloWidth * 0.8F - 0.4F;
             GL11.glScalef(0.7F + width, 0.3F, 0.7F + width);
         }
 
@@ -152,13 +167,15 @@ public class ModelHalo extends ModelPartInterface {
 
         type = config.type;
         thinHalo = type == 1;
-        shouldFloat = config.pattern <= 1;
-        shouldRotate = config.pattern % 2 == 0;
+        spinSpeed = getSpinSpeed(config);
+        floatSpeed = getFloatingSpeed(config);
+        floatDistance = getFloatingDistance(config);
         haloBase.isHidden = thinHalo;
         haloThin.isHidden = !thinHalo;
-        haloWidth = getWidth(config) * 14F;
-        haloElevation = getElevation(config) * 14F;
+        haloWidth = getWidth(config);
+        haloElevation = getElevation(config);
         haloRotationX = getRotationX(config) * 180 - 90;
+        haloRotationY = getRotationY(config) * 360 - 180;
         haloRotationZ = getRotationZ(config) * 180 - 90;
         haloMaterial = getMaterial(config);
     }
@@ -199,6 +216,18 @@ public class ModelHalo extends ModelPartInterface {
         }
     }
 
+    public static float getRotationY(ModelPartData data) {
+        return data.customData.hasKey("rotY") ? data.customData.getFloat("rotY") : 0.5F;
+    }
+
+    public static void setRotationY(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("rotY", value);
+        } else {
+            data.customData.removeTag("rotY");
+        }
+    }
+
     public static float getRotationZ(ModelPartData data) {
         return data.customData.hasKey("rotZ") ? data.customData.getFloat("rotZ") : 0.5F;
     }
@@ -208,6 +237,42 @@ public class ModelHalo extends ModelPartInterface {
             data.customData.setFloat("rotZ", value);
         } else {
             data.customData.removeTag("rotZ");
+        }
+    }
+
+    public static float getSpinSpeed(ModelPartData data) {
+        return data.customData.hasKey("spinSpeed") ? data.customData.getFloat("spinSpeed") : 0.5F;
+    }
+
+    public static void setSpinSpeed(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("spinSpeed", value);
+        } else {
+            data.customData.removeTag("spinSpeed");
+        }
+    }
+
+    public static float getFloatingSpeed(ModelPartData data) {
+        return data.customData.hasKey("floatSpeed") ? data.customData.getFloat("floatSpeed") : 0.5F;
+    }
+
+    public static void setFloatingSpeed(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("floatSpeed", value);
+        } else {
+            data.customData.removeTag("floatSpeed");
+        }
+    }
+
+    public static float getFloatingDistance(ModelPartData data) {
+        return data.customData.hasKey("floatDist") ? data.customData.getFloat("floatDist") : 0.5F;
+    }
+
+    public static void setFloatingDistance(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("floatDist", value);
+        } else {
+            data.customData.removeTag("floatDist");
         }
     }
 
