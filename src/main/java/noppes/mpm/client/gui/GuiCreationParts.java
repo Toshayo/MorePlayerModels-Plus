@@ -3,6 +3,7 @@ package noppes.mpm.client.gui;
 import kamkeel.MorePlayerModelsPermissions;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import noppes.mpm.ModelData;
 import noppes.mpm.ModelPartData;
@@ -345,64 +346,81 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 				y += 24;
 			}
 			if(data != null && data.type >= 1) {
+				GuiCreationParts.this.addLabel(new GuiNpcLabel(58, "gui.page", guiLeft + 102, guiTop + 55 + 48 + 4 * 23, 0xFFFFFF));
+				GuiCreationParts.this.addButton(new GuiButtonBiDirectional(58, guiLeft + 155, guiTop + 50 + 48 + 4 * 23, 80, 20, new String[] {"1", "2", "3"}, page));
+
 				int btnWidth = fontRendererObj.getStringWidth(StatCollector.translateToLocal("gui.halo.reset")) + 10;
-				if (page == 0) {
-					GuiCreationParts.this.addButton(new GuiButtonBiDirectional(57, guiLeft + 215, y - 25, 60, 20, new String[]{"Off", "Lit", "Solid"}, ModelHalo.getMaterial(data)));
+				switch (page) {
+					case 0: {
+						GuiCreationParts.this.addButton(new GuiButtonBiDirectional(57, guiLeft + 215, y - 25, 60, 20, new String[]{"Off", "Lit", "Solid"}, ModelHalo.getMaterial(data)));
 
-					GuiNpcSlider slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 49, guiLeft + 112, y, 120, 20, ModelHalo.getWidth(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.width"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(50, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						GuiNpcSlider slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 49, guiLeft + 112, y, 120, 20, ModelHalo.getWidth(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.width"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(50, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 53, guiLeft + 112, y, 120, 20, ModelHalo.getRotationX(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.rotationX"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(54, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 53, guiLeft + 112, y, 120, 20, ModelHalo.getRotationX(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.rotationX"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(54, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 51, guiLeft + 112, y, 120, 20, ModelHalo.getRotationY(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.rotationY"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(52, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 51, guiLeft + 112, y, 120, 20, ModelHalo.getRotationY(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.rotationY"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(52, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 55, guiLeft + 112, y, 120, 20, ModelHalo.getRotationZ(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.rotationZ"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(56, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 55, guiLeft + 112, y, 120, 20, ModelHalo.getRotationZ(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.rotationZ"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(56, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
+						break;
+					}
+					case 1: {
+						GuiNpcSlider slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 62, guiLeft + 112, y, 120, 20, ModelHalo.getFloatingSpeed(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.floating_speed"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(63, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					GuiCreationParts.this.addButton(new GuiNpcButton(58, guiLeft + 190, y, 80, 20, "gui.next"));
-					y += 23;
-				} else {
-					GuiNpcSlider slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 60, guiLeft + 112, y, 120, 20, ModelHalo.getElevation(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.elevation"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(61, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 64, guiLeft + 112, y, 120, 20, ModelHalo.getFloatingDistance(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.floating_distance"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(65, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 62, guiLeft + 112, y, 120, 20, ModelHalo.getFloatingSpeed(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.floating_speed"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(63, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						// Avoid 66 id, it closes gui
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 67, guiLeft + 112, y, 120, 20, ModelHalo.getSpinSpeed(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.spin_speed"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(68, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 64, guiLeft + 112, y, 120, 20, ModelHalo.getFloatingDistance(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.floating_distance"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(65, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						break;
+					}
+					case 2: {
+						GuiNpcSlider slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 69, guiLeft + 112, y, 120, 20, ModelHalo.getOffsetX(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.offsetX"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(70, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					// Avoid 66 id, it closes gui
-					slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 67, guiLeft + 112, y, 120, 20, ModelHalo.getSpinSpeed(data));
-					slider.setString(StatCollector.translateToLocal("gui.halo.spin_speed"));
-					GuiCreationParts.this.addSlider(slider);
-					GuiCreationParts.this.addButton(new GuiNpcButton(68, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
-					y += 23;
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 71, guiLeft + 112, y, 120, 20, ModelHalo.getOffsetY(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.offsetY"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(72, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
 
-					GuiCreationParts.this.addButton(new GuiNpcButton(59, guiLeft + 105, y, 80, 20, "gui.previous"));
-					y += 23;
+						slider = new GuiNpcSlider(new FakeGui(this::actionPerformed), 73, guiLeft + 112, y, 120, 20, ModelHalo.getOffsetZ(data));
+						slider.setString(StatCollector.translateToLocal("gui.halo.offsetZ"));
+						GuiCreationParts.this.addSlider(slider);
+						GuiCreationParts.this.addButton(new GuiNpcButton(74, guiLeft + 132 + 105, y, btnWidth, 20, "gui.halo.reset"));
+						y += 23;
+						break;
+					}
 				}
 			}
 			return y;
@@ -443,19 +461,8 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 					ModelHalo.setMaterial(data, (byte) ((GuiNpcButton) btn).getValue());
 					break;
 				case 58:
-					page = 1;
+					page = ((GuiNpcButton)btn).getValue();
 					GuiCreationParts.this.initGui();
-					break;
-				case 59:
-					page = 0;
-					GuiCreationParts.this.initGui();
-					break;
-				case 60:
-					ModelHalo.setElevation(data, ((GuiNpcSlider) btn).sliderValue);
-					break;
-				case 61:
-					ModelHalo.setElevation(data, 0.5F);
-					GuiCreationParts.this.getSlider(60).sliderValue = ModelHalo.getElevation(data);
 					break;
 				case 62:
 					ModelHalo.setFloatingSpeed(data, ((GuiNpcSlider) btn).sliderValue);
@@ -478,6 +485,27 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 					ModelHalo.setSpinSpeed(data, 0.5F);
 					GuiCreationParts.this.getSlider(67).sliderValue = ModelHalo.getSpinSpeed(data);
 					break;
+				case 69:
+					ModelHalo.setOffsetX(data, ((GuiNpcSlider) btn).sliderValue);
+					break;
+				case 70:
+					ModelHalo.setOffsetX(data, 0.5F);
+					GuiCreationParts.this.getSlider(69).sliderValue = ModelHalo.getOffsetX(data);
+					break;
+				case 71:
+					ModelHalo.setOffsetY(data, ((GuiNpcSlider) btn).sliderValue);
+					break;
+				case 72:
+					ModelHalo.setOffsetY(data, 0.5F);
+					GuiCreationParts.this.getSlider(71).sliderValue = ModelHalo.getOffsetY(data);
+					break;
+				case 73:
+					ModelHalo.setOffsetZ(data, ((GuiNpcSlider) btn).sliderValue);
+					break;
+				case 74:
+					ModelHalo.setOffsetZ(data, 0.5F);
+					GuiCreationParts.this.getSlider(73).sliderValue = ModelHalo.getOffsetZ(data);
+					break;
                 case 20:
                     int i = ((GuiNpcButton) btn).getValue();
                     if (i == 0 && canBeDeleted)
@@ -486,10 +514,7 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
                         data = playerdata.getOrCreatePart(part);
                         data.setCustomResource("");
                         data.playerTexture = false;
-						ModelHalo.setWidth(data, 0.5F);
-						ModelHalo.setElevation(data, 0.5F);
-						ModelHalo.setRotationX(data, 0.5F);
-						ModelHalo.setRotationZ(data, 0.5F);
+						data.customData = new NBTTagCompound();
                         data.setType(i - 1);
                     }
                     GuiCreationParts.this.initGui();
@@ -501,7 +526,7 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 		}
 
 		class FakeGui extends GuiScreen implements ISliderListener {
-			private Consumer<GuiNpcSlider> listener;
+			private final Consumer<GuiNpcSlider> listener;
 			private FakeGui(Consumer<GuiNpcSlider> listener) {
 				this.listener = listener;
 			}

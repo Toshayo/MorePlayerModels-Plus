@@ -17,7 +17,9 @@ public class ModelHalo extends ModelPartInterface {
     private AbstractClientPlayer entity;
     private boolean thinHalo;
     public float haloWidth;
-    public float haloElevation;
+    public float haloOffsetX;
+    public float haloOffsetY;
+    public float haloOffsetZ;
     public float haloRotationX;
     public float haloRotationY;
     public float haloRotationZ;
@@ -99,8 +101,8 @@ public class ModelHalo extends ModelPartInterface {
         }
         GL11.glTranslatef(0.0F, -0.2F + f1 * 0.05F, 0.0F);
 
-        float elevation = haloElevation - 0.5F;
-        GL11.glTranslatef(0F, -elevation, 0F);
+        float elevation = haloOffsetY - 0.5F;
+        GL11.glTranslatef((haloOffsetX - 0.5F) * 2, -elevation, (haloOffsetZ - 0.5F) * 2);
     }
 
     public void rotateHalo() {
@@ -175,7 +177,9 @@ public class ModelHalo extends ModelPartInterface {
         haloBase.isHidden = thinHalo;
         haloThin.isHidden = !thinHalo;
         haloWidth = getWidth(config);
-        haloElevation = getElevation(config);
+        haloOffsetX = getOffsetX(config);
+        haloOffsetY = getOffsetY(config);
+        haloOffsetZ = getOffsetZ(config);
         haloRotationX = getRotationX(config) * 180 - 90;
         haloRotationY = getRotationY(config) * 360 - 180;
         haloRotationZ = getRotationZ(config) * 180 - 90;
@@ -192,18 +196,6 @@ public class ModelHalo extends ModelPartInterface {
             data.customData.setFloat("width", value);
         } else {
             data.customData.removeTag("width");
-        }
-    }
-
-    public static float getElevation(ModelPartData data) {
-        return data.customData.hasKey("elevation") ? data.customData.getFloat("elevation") : 0.5F;
-    }
-
-    public static void setElevation(ModelPartData data, float value) {
-        if(Math.abs(value - 0.5F) > 0.001) {
-            data.customData.setFloat("elevation", value);
-        } else {
-            data.customData.removeTag("elevation");
         }
     }
 
@@ -240,6 +232,42 @@ public class ModelHalo extends ModelPartInterface {
             data.customData.setFloat("rotZ", value);
         } else {
             data.customData.removeTag("rotZ");
+        }
+    }
+
+    public static float getOffsetX(ModelPartData data) {
+        return data.customData.hasKey("offsetX") ? data.customData.getFloat("offsetX") : 0.5F;
+    }
+
+    public static void setOffsetX(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("offsetX", value);
+        } else {
+            data.customData.removeTag("offsetX");
+        }
+    }
+
+    public static float getOffsetY(ModelPartData data) {
+        return data.customData.hasKey("offsetY") ? data.customData.getFloat("offsetY") : 0.5F;
+    }
+
+    public static void setOffsetY(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("offsetY", value);
+        } else {
+            data.customData.removeTag("offsetY");
+        }
+    }
+
+    public static float getOffsetZ(ModelPartData data) {
+        return data.customData.hasKey("offsetZ") ? data.customData.getFloat("offsetZ") : 0.5F;
+    }
+
+    public static void setOffsetZ(ModelPartData data, float value) {
+        if(Math.abs(value - 0.5F) > 0.001) {
+            data.customData.setFloat("offsetZ", value);
+        } else {
+            data.customData.removeTag("offsetZ");
         }
     }
 
