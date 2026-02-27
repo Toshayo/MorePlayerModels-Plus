@@ -110,7 +110,7 @@ public class ModelHalo extends ModelPartInterface {
         GL11.glRotatef(haloRotationY, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(haloRotationZ, 0.0F, 0.0F, 1.0F);
         if(spinSpeed >= 0.01) {
-            GL11.glRotatef((float) entity.worldObj.getTotalWorldTime() * spinSpeed * spinSpeed * 4, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef((float) entity.ticksExisted * spinSpeed * spinSpeed * 4, 0.0F, 1.0F, 0.0F);
         }
     }
 
