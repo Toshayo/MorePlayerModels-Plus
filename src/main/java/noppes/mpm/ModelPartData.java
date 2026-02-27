@@ -83,15 +83,6 @@ public class ModelPartData {
 		return "Color: " + color + " Type: " + type;
 	}
 
-	public String getColor() {
-		String str = Integer.toHexString(color);
-
-    	while(str.length() < 6)
-    		str = "0" + str;
-    	
-    	return str;
-	}
-
 	public void setType(int type){
 		this.type = (byte) type;
 		location = null;

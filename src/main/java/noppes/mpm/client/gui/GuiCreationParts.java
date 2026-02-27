@@ -199,7 +199,7 @@ public class GuiCreationParts extends GuiCreationScreenInterface implements ITex
 				GuiCreationParts.this.initGui();
 			}
 			if(btn.id == 23){
-				setSubGui(new GuiModelColor(GuiCreationParts.this, data));
+				setSubGui(new GuiModelColor(GuiCreationParts.this, () -> data.color, v -> data.color = v));
 			}
 		}
 		public GuiPart noPlayerOptions(){
