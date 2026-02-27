@@ -3,6 +3,7 @@ package noppes.mpm.client.model.part.head;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import noppes.mpm.ModelData;
 import noppes.mpm.ModelPartData;
@@ -25,6 +26,7 @@ public class ModelHalo extends ModelPartInterface {
     public float floatDistance;
     public byte haloMaterial;
     public byte type;
+    public NBTTagCompound customData;
 
     private final ModelRenderer haloBase;
     private final ModelRenderer haloThin;
@@ -178,6 +180,7 @@ public class ModelHalo extends ModelPartInterface {
         haloRotationY = getRotationY(config) * 360 - 180;
         haloRotationZ = getRotationZ(config) * 180 - 90;
         haloMaterial = getMaterial(config);
+        customData = (NBTTagCompound) config.customData.copy();
     }
 
     public static float getWidth(ModelPartData data) {
